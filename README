@@ -1,0 +1,27 @@
+334CA Ciorceanu Andrei-Razvan
+Tema 1 - APD
+
+    In primul rand, dorim paralelizarea functiei run_algorithm si a functiei compute_best_fitness unde se poate obtine un timp
+mai bun si o acceleratie a problemei, facand aceste operatii in paralel. Pentru a putea paraleliza functia run_algorithm dorim
+sa o dam ca parametru thread-urilor sub forma de threadFunction. Pentru a face aceste lucru trebuie sa scoatem toti parametrii initiali
+ai acestei functii si sa punem un paramtru de tipul void *,astfel am creat o structura de thread care sa contine toti acesti parametrii.
+
+    In header-ul thread_str avem aceasta structura unde am adaugat de asemenea pentru fiecare thread,id-ul, numarul de thread-uri
+dat ca parametru, si o bariera si un mutex pe care ii vom pasa prin referinta deoarece am observat ca daca initializam cate o bariera
+pentru fiecare thread se va face o copie a acesteia in run_alg si astfel nu vom putea sincroniza thread-urile.
+
+    In tema1_par,am declarat vectorul de thread-uri cat si cel de id-uri, am facut verificari necesare pentru alocarea de memorie
+atat a acestor vectori cat si a vectorilor de individual necesari in algoritm. Am initializat bariera/mutexul si am luat un for 
+in care initializez fiecare element al structurii si de asemenena mai am un vector cu coduri de eroare pentru a verificarea executarea
+operatiilor de create si join pentru thread-uri. La final se distruge bariera si se face free pentru memoria alocata anterior.
+
+    In functia compute_fitness am dat acesta structura ca parametru functiei pentru a putea folosi bariera si formulele de paraleli
+zare din laborator pentru start si end si am le am inlocuit in for pentru a realiza acest lucru. In celelalte functii folosite in 
+run_algorithm am adaugat structura de thread printre parametrii pentru a pune mutexi astfel incat sa nu se creeze acel race condition
+realizat de thread-uri.
+
+    In functia run_algorithm am facut cast argumentului de tip void * la structura noastra de thread si am folisit aceleasi formule
+pentru start si end ca la laborator pentru a paraleliza toate acele for-uri din aceasta functie. Am folosit in loc de qsort-ul din
+varianta secventiala implementarea de oets paralelizat din laborator pentru a scoate un timp mai bun si acceleratie pentru nr de
+thread-uri folosit pe algoritm. Dupa fiecare for am folisit bariere pentru a realiza sincronizarea thread-urilor, am inlocuit parametrii
+din implementarea secventiala cu cei aflati in structura de thread si la final am facut afisarea pentru un singur thread, cel cu id-ul 0.
